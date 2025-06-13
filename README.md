@@ -1,0 +1,2 @@
+# generaQr
+Generar Qrs
