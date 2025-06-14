@@ -1,17 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // --- ELEMENTOS DEL GENERADOR QR ---
   const qrTextInput = document.getElementById("qrTextInput");
   const generateQrBtn = document.getElementById("generateQrBtn");
   const downloadQrBtn = document.getElementById("downloadQrBtn");
   const qrcodeDiv = document.getElementById("qrcode");
   const qrMessageDiv = document.getElementById("qrMessage");
 
-  let qrcodeInstance = null; // Para almacenar la instancia del QR
+  let qrcodeInstance = null;
 
-  // --- FUNCIONALIDAD GENERADOR QR ---
   generateQrBtn.addEventListener("click", () => {
     const text = qrTextInput.value.trim();
-    qrcodeDiv.innerHTML = ""; // Limpiar QR anterior
+    qrcodeDiv.innerHTML = "";
     qrMessageDiv.innerHTML = "";
     qrMessageDiv.className = "response-message";
     downloadQrBtn.style.display = "none";
@@ -20,15 +18,15 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         qrcodeInstance = new QRCode(qrcodeDiv, {
           text: text,
-          width: 256, // Puedes ajustar el tamaño
+          width: 256,
           height: 256,
           colorDark: "#000000",
           colorLight: "#ffffff",
-          correctLevel: QRCode.CorrectLevel.H, // Nivel de corrección de error alto
+          correctLevel: QRCode.CorrectLevel.H,
         });
         qrMessageDiv.classList.add("success-message");
         qrMessageDiv.innerText = "QR generado exitosamente.";
-        downloadQrBtn.style.display = "block"; // Mostrar botón de descarga
+        downloadQrBtn.style.display = "block";
       } catch (e) {
         qrMessageDiv.classList.add("error-message");
         qrMessageDiv.innerText = `Error al generar QR: ${e.message}`;
