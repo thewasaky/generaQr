@@ -1,5 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Main elements
+  // Tabs
+  const tabQrBtn = document.getElementById("tabQrBtn");
+  const tabBarcodeBtn = document.getElementById("tabBarcodeBtn");
+  const qrView = document.getElementById("qrView");
+  const barcodeView = document.getElementById("barcodeView");
+
+  // QR elements
   const qrTypeSelect = document.getElementById("qrType");
   const qrFieldsContainer = document.getElementById("qrFieldsContainer");
   const qrTextInput = document.getElementById("qrTextInput");
@@ -12,6 +18,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const qrSizeInput = document.getElementById("qrSize");
   const qrLogoInput = document.getElementById("qrLogoInput");
   const qrLogoPreview = document.getElementById("qrLogoPreview");
+  const qrCustomizeRow = document.getElementById("qrCustomizeRow");
+  const qrLogoGroup = document.getElementById("qrLogoGroup");
+
+  // Barcode elements
+  const barcodeTextInput = document.getElementById("barcodeTextInput");
+  const downloadBarcodeBtn = document.getElementById("downloadBarcodeBtn");
+  const barcodeDiv = document.getElementById("barcode");
+  const barcodeMessageDiv = document.getElementById("barcodeMessage");
 
   let qrcodeInstance = null;
   let lastQR = { text: "", colorDark: "", colorLight: "", size: 256 };
@@ -214,6 +228,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // --- QR GENERATOR ---
   function generateQR() {
     const type = qrTypeSelect ? qrTypeSelect.value : "text";
     const text = buildQRContent(type);
@@ -314,6 +329,62 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initial QR
   generateQR();
 
+  // --- BARCODE GENERATOR ---
+  function generateBarcode() {
+    barcodeDiv.innerHTML = "";
+    barcodeMessageDiv.innerHTML = "";
+    barcodeMessageDiv.className = "response-message";
+    downloadBarcodeBtn.style.display = "none";
+    const text = barcodeTextInput.value.trim();
+    if (text) {
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("id", "barcodeSvg");
+      svg.setAttribute("height", "80");
+      svg.setAttribute("width", "256");
+      barcodeDiv.appendChild(svg);
+      try {
+        JsBarcode(svg, text, {
+          format: "code128",
+          lineColor: "#000",
+          background: "#fff",
+          width: 2,
+          height: 80,
+          displayValue: true,
+          fontSize: 18,
+        });
+        barcodeMessageDiv.classList.add("success-message");
+        barcodeMessageDiv.innerText = "Código de barras generado exitosamente.";
+        downloadBarcodeBtn.style.display = "block";
+      } catch (e) {
+        barcodeMessageDiv.classList.add("error-message");
+        barcodeMessageDiv.innerText = `Error al generar código de barras: ${e.message}`;
+      }
+    } else {
+      barcodeMessageDiv.classList.add("error-message");
+      barcodeMessageDiv.innerText =
+        "Por favor, introduce información para generar el código de barras.";
+    }
+  }
+
+  barcodeTextInput.addEventListener("input", generateBarcode);
+
+  // Initial Barcode
+  generateBarcode();
+
+  // --- TABS LOGIC ---
+  tabQrBtn.addEventListener("click", () => {
+    tabQrBtn.classList.add("active");
+    tabBarcodeBtn.classList.remove("active");
+    qrView.style.display = "block";
+    barcodeView.style.display = "none";
+  });
+  tabBarcodeBtn.addEventListener("click", () => {
+    tabBarcodeBtn.classList.add("active");
+    tabQrBtn.classList.remove("active");
+    qrView.style.display = "none";
+    barcodeView.style.display = "block";
+  });
+
   downloadQrBtn.addEventListener("click", () => {
     if (qrcodeInstance) {
       const canvas = qrcodeDiv.querySelector("canvas");
@@ -355,5 +426,43 @@ document.addEventListener("DOMContentLoaded", () => {
       qrMessageDiv.classList.add("error-message");
       qrMessageDiv.innerText = "Genera un QR primero para poder descargarlo.";
     }
+  });
+
+  // Descargar código de barras como imagen
+  downloadBarcodeBtn.addEventListener("click", () => {
+    const svg = document.getElementById("barcodeSvg");
+    if (!svg) return;
+    // Convertir SVG a PNG usando un canvas temporal
+    const serializer = new XMLSerializer();
+    const svgString = serializer.serializeToString(svg);
+    const canvas = document.createElement("canvas");
+    const width = svg.width.baseVal.value || 256;
+    const height = svg.height.baseVal.value || 80;
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    const img = new window.Image();
+    const svgBlob = new Blob([svgString], {
+      type: "image/svg+xml;charset=utf-8",
+    });
+    const url = URL.createObjectURL(svgBlob);
+    img.onload = function () {
+      ctx.drawImage(img, 0, 0, width, height);
+      URL.revokeObjectURL(url);
+      const pngUrl = canvas.toDataURL("image/png");
+      const a = document.createElement("a");
+      a.href = pngUrl;
+      a.download = "barcode.png";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      qrMessageDiv.classList.add("success-message");
+      qrMessageDiv.innerText = "Código de barras descargado exitosamente!";
+    };
+    img.onerror = function () {
+      qrMessageDiv.classList.add("error-message");
+      qrMessageDiv.innerText = "No se pudo descargar el código de barras.";
+    };
+    img.src = url;
   });
 });

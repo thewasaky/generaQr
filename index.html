@@ -13,13 +13,17 @@
   </head>
 
   <body>
-    <div class="qr-container">
+    <div class="qr-tabs">
+      <button class="qr-tab-btn active" id="tabQrBtn">Generador QR</button>
+      <button class="qr-tab-btn" id="tabBarcodeBtn">Generador de Barras</button>
+    </div>
+
+    <div class="qr-container" id="qrView">
       <h1>Generador de Código QR</h1>
       <p>
         Introduce el texto, URL o cualquier información para generar tu código
         QR.
       </p>
-
       <div class="qr-input-group">
         <label for="qrType">Tipo de QR:</label>
         <select id="qrType">
@@ -51,15 +55,14 @@
       </div>
       <div class="qr-input-group" id="qrFieldsContainer"></div>
       <div class="qr-input-group" id="qrTextGroup">
-        <label for="qrTextInput">Contenido para el QR:</label>
+        <label for="qrTextInput">Contenido:</label>
         <textarea
           id="qrTextInput"
           rows="6"
           placeholder="Ejemplo: https://www.google.com o ¡Hola Mundo!"
         ></textarea>
       </div>
-
-      <div class="qr-customize-row">
+      <div class="qr-customize-row" id="qrCustomizeRow">
         <label
           >Color QR: <input type="color" id="colorDark" value="#000000"
         /></label>
@@ -79,18 +82,39 @@
           px</label
         >
       </div>
-
       <div class="qr-buttons">
         <button id="downloadQrBtn" style="display: none">Descargar QR</button>
       </div>
-
       <div class="qr-output">
         <div id="qrcode"></div>
         <p id="qrMessage" class="response-message"></p>
       </div>
     </div>
 
+    <div class="qr-container" id="barcodeView" style="display: none">
+      <h1>Generador de Código de Barras</h1>
+      <p>Introduce el texto para generar tu código de barras (Code128).</p>
+      <div class="qr-input-group">
+        <label for="barcodeTextInput">Contenido:</label>
+        <input
+          type="text"
+          id="barcodeTextInput"
+          placeholder="Ejemplo: 1234567890"
+        />
+      </div>
+      <div class="qr-buttons">
+        <button id="downloadBarcodeBtn" style="display: none">
+          Descargar Código de Barras
+        </button>
+      </div>
+      <div class="qr-output">
+        <div id="barcode"></div>
+        <p id="barcodeMessage" class="response-message"></p>
+      </div>
+    </div>
+
     <script src="qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
