@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Generador de Códigos QR</title>
+    <link rel="stylesheet" href="style.css" />
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5731432044708384"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+
+  <body>
+    <div class="qr-container">
+      <h1>Generador de Código QR</h1>
+      <p>
+        Introduce el texto, URL o cualquier información para generar tu código
+        QR.
+      </p>
+
+      <div class="qr-input-group">
+        <label for="qrType">Tipo de QR:</label>
+        <select id="qrType">
+          <option value="text">Texto/URL</option>
+          <option value="wifi">WiFi</option>
+          <option value="vcard">vCard (Contacto)</option>
+          <option value="email">Email</option>
+          <option value="tel">Teléfono</option>
+          <option value="sms">SMS</option>
+          <option value="event">Evento (Calendario)</option>
+        </select>
+      </div>
+      <div class="qr-input-group" id="qrLogoGroup">
+        <label for="qrLogoInput">Logo en el centro (opcional):</label>
+        <input
+          type="file"
+          id="qrLogoInput"
+          accept="image/png, image/jpeg, image/svg+xml"
+        />
+        <img
+          id="qrLogoPreview"
+          style="
+            max-height: 48px;
+            max-width: 120px;
+            display: none;
+            margin-top: 8px;
+          "
+        />
+      </div>
+      <div class="qr-input-group" id="qrFieldsContainer"></div>
+      <div class="qr-input-group" id="qrTextGroup">
+        <label for="qrTextInput">Contenido para el QR:</label>
+        <textarea
+          id="qrTextInput"
+          rows="6"
+          placeholder="Ejemplo: https://www.google.com o ¡Hola Mundo!"
+        ></textarea>
+      </div>
+
+      <div class="qr-customize-row">
+        <label
+          >Color QR: <input type="color" id="colorDark" value="#000000"
+        /></label>
+        <label
+          >Fondo: <input type="color" id="colorLight" value="#ffffff"
+        /></label>
+        <label
+          >Tamaño:
+          <input
+            type="number"
+            id="qrSize"
+            min="128"
+            max="1024"
+            value="256"
+            style="width: 70px"
+          />
+          px</label
+        >
+      </div>
+
+      <div class="qr-buttons">
+        <button id="downloadQrBtn" style="display: none">Descargar QR</button>
+      </div>
+
+      <div class="qr-output">
+        <div id="qrcode"></div>
+        <p id="qrMessage" class="response-message"></p>
+      </div>
+    </div>
+
+    <script src="qrcode.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
